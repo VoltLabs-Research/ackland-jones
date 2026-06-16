@@ -123,6 +123,7 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
             .perAtomColumnWriter = [&types](ColumnarAtomWriter& w, size_t i) {
                 w.field("structure_type", static_cast<int64_t>(types[i]));
             },
+            .includeStructureColumns = true, // structural-identification plugin
         });
     }
 

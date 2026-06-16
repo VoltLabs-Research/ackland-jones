@@ -12,7 +12,7 @@
             "icon": "HiCubeTransparent",
             "author": "VoltLabs Research",
             "license": "MIT",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "homepage": "https://github.com/voltlabs-research/ackland-jones",
             "description": "Identifies FCC, HCP, BCC and ICO crystal structures using adaptive nearest-neighbor bond-angle analysis. No cutoff parameter required (Ackland & Jones, PRB 2006)."
           }
