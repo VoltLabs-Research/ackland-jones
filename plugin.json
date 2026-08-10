@@ -4,7 +4,10 @@
       {
         "id": "plugin-metadata",
         "type": "modifier",
-        "position": { "x": 240, "y": 160 },
+        "position": {
+          "x": 240,
+          "y": 160
+        },
         "data": {
           "modifier": {
             "name": "Ackland-Jones Analysis",
@@ -19,27 +22,25 @@
         }
       },
       {
-        "id": "plugin-arguments",
-        "type": "arguments",
-        "position": { "x": 528, "y": 208 },
-        "data": {
-          "arguments": {
-            "arguments": []
-          }
-        }
-      },
-      {
         "id": "trajectory-context",
         "type": "context",
-        "position": { "x": 816, "y": 160 },
+        "position": {
+          "x": 816,
+          "y": 160
+        },
         "data": {
-          "context": { "source": "trajectory_dumps" }
+          "context": {
+            "source": "trajectory_dumps"
+          }
         }
       },
       {
         "id": "foreach-trajectory-dumps",
         "type": "forEach",
-        "position": { "x": 1088, "y": 208 },
+        "position": {
+          "x": 1088,
+          "y": 208
+        },
         "data": {
           "forEach": {
             "iterableSource": "{{ trajectory-context.trajectory_dumps }}"
@@ -49,7 +50,10 @@
       {
         "id": "analysis-entrypoint",
         "type": "entrypoint",
-        "position": { "x": 1392, "y": 208 },
+        "position": {
+          "x": 1392,
+          "y": 208
+        },
         "data": {
           "entrypoint": {
             "type": "executable",
@@ -64,7 +68,10 @@
       {
         "id": "structure-exposure",
         "type": "exposure",
-        "position": { "x": 1712, "y": 208 },
+        "position": {
+          "x": 1712,
+          "y": 208
+        },
         "data": {
           "exposure": {
             "name": "Ackland-Jones Structure",
@@ -91,7 +98,10 @@
       {
         "id": "structure-export",
         "type": "export",
-        "position": { "x": 2032, "y": 208 },
+        "position": {
+          "x": 2032,
+          "y": 208
+        },
         "data": {
           "export": {
             "exporter": "AtomisticExporter",
@@ -102,7 +112,10 @@
       {
         "id": "summary-exposure",
         "type": "exposure",
-        "position": { "x": 1712, "y": 336 },
+        "position": {
+          "x": 1712,
+          "y": 336
+        },
         "data": {
           "exposure": {
             "name": "Ackland-Jones Summary",
@@ -115,20 +128,6 @@
       }
     ],
     "edges": [
-      {
-        "id": "edge-metadata-arguments",
-        "source": "plugin-metadata",
-        "sourceHandle": "output",
-        "target": "plugin-arguments",
-        "targetHandle": "input"
-      },
-      {
-        "id": "edge-arguments-context",
-        "source": "plugin-arguments",
-        "sourceHandle": "output",
-        "target": "trajectory-context",
-        "targetHandle": "input"
-      },
       {
         "id": "edge-context-foreach",
         "source": "trajectory-context",
@@ -163,7 +162,22 @@
         "sourceHandle": "output",
         "target": "summary-exposure",
         "targetHandle": "input"
+      },
+      {
+        "id": "edge-plugin-metadata-trajectory-context",
+        "source": "plugin-metadata",
+        "sourceHandle": "output",
+        "target": "trajectory-context",
+        "targetHandle": "input"
       }
     ]
+  },
+  "interface": {
+    "version": 2,
+    "provides": {
+      "volt/per-atom-properties@1": {
+        "atoms": "atoms.parquet"
+      }
+    }
   }
 }
