@@ -15,7 +15,7 @@
             "icon": "HiCubeTransparent",
             "author": "VoltLabs Research",
             "license": "MIT",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "homepage": "https://github.com/voltlabs-research/ackland-jones",
             "description": "Identifies FCC, HCP, BCC and ICO crystal structures using adaptive nearest-neighbor bond-angle analysis. No cutoff parameter required (Ackland & Jones, PRB 2006)."
           }
@@ -118,7 +118,41 @@
         "data": {
           "export": {
             "exporter": "AtomisticExporter",
-            "type": "glb"
+            "type": "glb",
+            "options": {
+              "propertyColors": {
+                "OTHER": [
+                  0.949,
+                  0.949,
+                  0.949,
+                  1
+                ],
+                "FCC": [
+                  0.4,
+                  1,
+                  0.4,
+                  1
+                ],
+                "HCP": [
+                  1,
+                  0.4,
+                  0.4,
+                  1
+                ],
+                "BCC": [
+                  0.4,
+                  0.4,
+                  1,
+                  1
+                ],
+                "ICO": [
+                  1,
+                  0.6471,
+                  0,
+                  1
+                ]
+              }
+            }
           }
         }
       },
