@@ -19,7 +19,6 @@ static AcklandJonesStructureType determineAJStructure(
     if (query.results().size() < 6)
         return AcklandJonesStructureType::OTHER;
 
-    // Mean squared distance of 6 nearest neighbours.
     double r0sq = 0.0;
     for (int j = 0; j < 6; ++j)
         r0sq += query.results()[j].distanceSq;
@@ -37,7 +36,6 @@ static AcklandJonesStructureType determineAJStructure(
     for (auto it = n0end; it != query.results().end(); ++it, ++n1)
         if (it->distanceSq >= n1DistSq) break;
 
-    // Build the 8-bin angle histogram for the n0 shell.
     int chi[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     for (auto j = query.results().begin(); j != n0end; ++j) {
         const double normJ = std::sqrt(j->distanceSq);
@@ -123,11 +121,11 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
             .perAtomColumnWriter = [&types](ColumnarAtomWriter& w, size_t i) {
                 w.field("structure_type", static_cast<int64_t>(types[i]));
             },
-            .includeStructureColumns = true, // structural-identification plugin
+            .includeStructureColumns = true,
         });
     }
 
     return result;
 }
 
-} // namespace Volt
+}
