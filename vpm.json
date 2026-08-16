@@ -1,6 +1,6 @@
 {
   "name": "@voltlabs/ackland-jones",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "kind": "workflow",
   "publisher": "voltlabs",
   "description": "Ackland-Jones bond-angle structure classifier: identifies FCC, HCP, BCC, ICO via adaptive nearest-neighbor bond angles. No cutoff parameter required (Ackland & Jones, PRB 2006).",
