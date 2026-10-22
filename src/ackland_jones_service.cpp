@@ -3,6 +3,7 @@
 #include <volt/core/frame_adapter.h>
 #include <volt/core/analysis_result.h>
 #include <volt/plugin/output_serializer.h>
+#include <volt/core/progress.h>
 #include <spdlog/spdlog.h>
 
 #include <cmath>
@@ -89,14 +90,22 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
     if (!positions)
         return AnalysisResult::failure("Failed to create position property");
 
+    spdlog::info("Building neighbor lists (14 nearest neighbors) for {} atoms...", frame.natoms);
+    Stopwatch timer;
     NearestNeighborFinder neighFinder(14);
     if (!neighFinder.prepare(positions.get(), frame.simulationCell))
         return AnalysisResult::failure("NearestNeighborFinder::prepare failed");
+    spdlog::info("Neighbor lists ready in {}", timer.elapsed());
 
     const size_t N = static_cast<size_t>(frame.natoms);
     std::vector<AcklandJonesStructureType> types(N);
-    for (size_t i = 0; i < N; ++i)
+    spdlog::info("Classifying {} atoms...", N);
+    ProgressReporter progress("Classifying atoms", N);
+    for (size_t i = 0; i < N; ++i) {
         types[i] = determineAJStructure(neighFinder, i);
+        progress.update(i + 1);
+    }
+    spdlog::info("Classified {} atoms in {}", N, progress.elapsed());
 
     std::array<int, 5> counts{};
     for (auto t : types)
