@@ -111,6 +111,11 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
     for (auto t : types)
         counts[static_cast<int>(t)]++;
 
+    spdlog::info("Structure types: FCC {} ({:.1f}%), HCP {} ({:.1f}%), BCC {} ({:.1f}%), ICO {} ({:.1f}%), Other {} ({:.1f}%)",
+        counts[1], percentOf(counts[1], N), counts[2], percentOf(counts[2], N),
+        counts[3], percentOf(counts[3], N), counts[4], percentOf(counts[4], N),
+        counts[0], percentOf(counts[0], N));
+
     json result;
     result["main_listing"] = {
         {"total_atoms", frame.natoms},
