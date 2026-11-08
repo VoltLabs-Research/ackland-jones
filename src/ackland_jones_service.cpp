@@ -90,12 +90,15 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
     if (!positions)
         return AnalysisResult::failure("Failed to create position property");
 
+    // Neighbor lists, classification and outputs, weighed by how long each took on a sample run.
+    ProgressSteps steps({1.0, 6.0, 2.0});
     spdlog::info("Building neighbor lists (14 nearest neighbors) for {} atoms...", frame.natoms);
     Stopwatch timer;
     NearestNeighborFinder neighFinder(14);
     if (!neighFinder.prepare(positions.get(), frame.simulationCell))
         return AnalysisResult::failure("NearestNeighborFinder::prepare failed");
     spdlog::info("Neighbor lists ready in {}", timer.elapsed());
+    steps.next();
 
     const size_t N = static_cast<size_t>(frame.natoms);
     std::vector<AcklandJonesStructureType> types(N);
@@ -106,6 +109,7 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
         progress.update(i + 1);
     }
     spdlog::info("Classified {} atoms in {}", N, progress.elapsed());
+    steps.next();
 
     std::array<int, 5> counts{};
     for (auto t : types)
