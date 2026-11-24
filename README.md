@@ -5,6 +5,7 @@ Identifies FCC, HCP, BCC and ICO crystal structures using adaptive nearest-neigh
 ## Install
 
 ```bash
+npm install -g @voltstack/vpm
 vpm install @voltlabs/ackland-jones
 ```
 
