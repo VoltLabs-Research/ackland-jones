@@ -1,16 +1,18 @@
 #include <volt/plugin/ackland_jones_service.h>
+#include <volt/plugin/ackland_jones_log.h>
 #include <volt/analysis/nearest_neighbor_finder.h>
 #include <volt/core/frame_adapter.h>
 #include <volt/core/analysis_result.h>
 #include <volt/plugin/output_serializer.h>
 #include <volt/core/progress.h>
-#include <spdlog/spdlog.h>
+#include <volt/core/type_counts.h>
 
 #include <cmath>
+#include <map>
 
 namespace Volt {
 
-static AcklandJonesStructureType determineAJStructure(
+AcklandJonesStructureType AcklandJonesService::determineAJStructure(
     NearestNeighborFinder& neighFinder,
     size_t particleIndex)
 {
@@ -90,35 +92,31 @@ json AcklandJonesService::compute(const LammpsParser::Frame& frame, const std::s
     if (!positions)
         return AnalysisResult::failure("Failed to create position property");
 
-    // Neighbor lists, classification and outputs, weighed by how long each took on a sample run.
-    ProgressSteps steps({1.0, 6.0, 2.0});
-    spdlog::info("Building neighbor lists (14 nearest neighbors) for {} atoms...", frame.natoms);
-    Stopwatch timer;
+    AcklandJonesLog log;
+    // Weighed by how long each step took on a sample run.
+    ProgressSteps steps({
+        {"Building neighbor lists", 1.0},
+        {"Classifying atoms", 6.0},
+        {"Writing outputs", 2.0},
+    });
     NearestNeighborFinder neighFinder(14);
     if (!neighFinder.prepare(positions.get(), frame.simulationCell))
         return AnalysisResult::failure("NearestNeighborFinder::prepare failed");
-    spdlog::info("Neighbor lists ready in {}", timer.elapsed());
+    log.dump(neighFinder);
     steps.next();
 
     const size_t N = static_cast<size_t>(frame.natoms);
     std::vector<AcklandJonesStructureType> types(N);
-    spdlog::info("Classifying {} atoms...", N);
     ProgressReporter progress("Classifying atoms", N);
     for (size_t i = 0; i < N; ++i) {
         types[i] = determineAJStructure(neighFinder, i);
         progress.update(i + 1);
     }
-    spdlog::info("Classified {} atoms in {}", N, progress.elapsed());
+    log.dump(types);
     steps.next();
 
-    std::array<int, 5> counts{};
-    for (auto t : types)
-        counts[static_cast<int>(t)]++;
-
-    spdlog::info("Structure types: FCC {} ({:.1f}%), HCP {} ({:.1f}%), BCC {} ({:.1f}%), ICO {} ({:.1f}%), Other {} ({:.1f}%)",
-        counts[1], percentOf(counts[1], N), counts[2], percentOf(counts[2], N),
-        counts[3], percentOf(counts[3], N), counts[4], percentOf(counts[4], N),
-        counts[0], percentOf(counts[0], N));
+    std::map<int, int> counts = countTypes(types);
+    log.dump(counts);
 
     json result;
     result["main_listing"] = {

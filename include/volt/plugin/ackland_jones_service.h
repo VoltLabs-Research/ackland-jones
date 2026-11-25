@@ -27,9 +27,14 @@ inline const char* acklandJonesStructureName(AcklandJonesStructureType t) {
     }
 }
 
+class NearestNeighborFinder;
+
 class AcklandJonesService {
 public:
     json compute(const LammpsParser::Frame& frame, const std::string& outputBase);
+
+private:
+    static AcklandJonesStructureType determineAJStructure(NearestNeighborFinder& neighFinder, size_t particleIndex);
 };
 
 }
